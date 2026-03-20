@@ -1,72 +1,100 @@
-import { useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import Logo from "../components/Logo";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
     try {
       await login(email, password);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch {
-      setError('Invalid email or password');
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-sm w-full bg-white rounded-2xl shadow-md p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">🌸 Madressilva Guide</h1>
-        <p className="text-gray-500 text-sm text-center mb-6">Sign in to your account</p>
+    <div className="flex min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
+      {/* Decorative left panel */}
+      <div
+        className="hidden lg:flex lg:w-1/2 flex-col justify-between p-16"
+        style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
+      >
+        <Logo size={40} className="opacity-80" />
+        <div>
+          <p className="font-serif text-5xl italic leading-tight opacity-90">
+            The places that
+            <br />
+            made us who we are.
+          </p>
+          <p className="mt-6 text-sm opacity-50">— Irmandade Madressilva</p>
+        </div>
+        <p className="text-xs opacity-30 uppercase tracking-widest">Lisboa</p>
+      </div>
 
-        {error && (
-          <div className="bg-red-50 text-red-700 text-sm rounded-lg px-4 py-2 mb-4">
-            {error}
+      {/* Form panel */}
+      <div className="flex w-full flex-col justify-center px-8 lg:w-1/2 lg:px-20">
+        <div className="mx-auto w-full max-w-sm">
+          <div className="mb-2 flex items-center gap-2 lg:hidden">
+            <Logo size={24} />
           </div>
-        )}
+          <h2 className="font-serif text-3xl" style={{ color: "var(--fg)" }}>
+            Sign in
+          </h2>
+          <p className="mt-1 text-sm" style={{ color: "var(--fg-muted)" }}>
+            Welcome back to Irmandade Madressilva
+          </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="••••••••"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-green-700 hover:bg-green-800 disabled:opacity-60 text-white font-semibold py-2 rounded-lg text-sm"
-          >
-            {loading ? 'Signing in…' : 'Sign in'}
-          </button>
-        </form>
+          {error && (
+            <div className="mt-6 border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-700 dark:border-danger-800 dark:bg-danger-900/20 dark:text-danger-300">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <div>
+              <label className="label">Email</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label className="label">Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input"
+                placeholder="••••••••"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary btn-lg w-full"
+            >
+              {loading ? "Signing in…" : "Sign in"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
