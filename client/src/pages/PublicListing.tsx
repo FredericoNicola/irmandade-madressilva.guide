@@ -7,11 +7,36 @@ export default function PublicListing() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [shimmying, setShimmying] = useState(false);
 
   useEffect(() => {
     getEntries()
       .then((res) => setEntries(res.data))
       .finally(() => setLoading(false));
+  }, []);
+
+  // Periodic spontaneous shimmy
+  useEffect(() => {
+    let shimTimer: ReturnType<typeof setTimeout>;
+    let stopTimer: ReturnType<typeof setTimeout>;
+
+    const schedule = () => {
+      // Wait 3–7 s then wiggle for 600 ms
+      const delay = 3000 + Math.random() * 4000;
+      shimTimer = setTimeout(() => {
+        setShimmying(true);
+        stopTimer = setTimeout(() => {
+          setShimmying(false);
+          schedule();
+        }, 650);
+      }, delay);
+    };
+
+    schedule();
+    return () => {
+      clearTimeout(shimTimer);
+      clearTimeout(stopTimer);
+    };
   }, []);
 
   const filtered = entries.filter(
@@ -35,19 +60,47 @@ export default function PublicListing() {
           >
             Lisbon — Since Always
           </p>
-          <h1
-            className="font-serif leading-[0.9] tracking-tight"
-            style={{
-              color: "var(--fg)",
-              fontSize: "clamp(3.5rem, 10vw, 8rem)",
-            }}
-          >
-            Irmandade
-            <br />
-            <span className="italic" style={{ color: "var(--brand)" }}>
-              Madressilva
-            </span>
-          </h1>
+
+          {/* Mobile: badge image centered above title */}
+          <div className="mb-6 flex justify-center md:hidden">
+            <img
+              src="/logo.png"
+              alt="Irmandade Madressilva"
+              width={80}
+              height={80}
+              className={`rounded-full ${shimmying ? "animate-crow" : ""}`}
+            />
+          </div>
+
+          {/* Desktop: title + badge image side by side */}
+          <div className="flex items-center justify-center gap-12">
+            <h1
+              className="font-serif leading-[0.9] tracking-tight"
+              style={{
+                color: "var(--fg)",
+                fontSize: "clamp(3.5rem, 10vw, 8rem)",
+              }}
+            >
+              Irmandade
+              <br />
+              <span className="italic" style={{ color: "var(--brand)" }}>
+                Madressilva
+              </span>
+            </h1>
+
+            <img
+              src="/logo.png"
+              alt="Irmandade Madressilva"
+              width={140}
+              height={140}
+              className={`hidden shrink-0 rounded-full md:block ${shimmying ? "animate-crow" : ""}`}
+              style={{
+                boxShadow:
+                  "0 0 0 1.5px rgba(196,151,62,0.5), 0 0 24px rgba(196,151,62,0.12)",
+              }}
+            />
+          </div>
+
           <p
             className="mx-auto mt-8 max-w-lg text-base leading-relaxed"
             style={{ color: "var(--fg-muted)" }}
