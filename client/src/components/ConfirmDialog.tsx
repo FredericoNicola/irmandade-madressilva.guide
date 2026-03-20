@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -7,23 +7,24 @@ interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
-export default function ConfirmDialog({ open, message, onConfirm, onCancel }: ConfirmDialogProps) {
+export default function ConfirmDialog({
+  open,
+  message,
+  onConfirm,
+  onCancel,
+}: ConfirmDialogProps) {
   const cancelRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (open) {
-      cancelRef.current?.focus();
-    }
+    if (open) cancelRef.current?.focus();
   }, [open]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (open && e.key === 'Escape') {
-        onCancel();
-      }
+      if (open && e.key === "Escape") onCancel();
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, onCancel]);
 
   if (!open) return null;
@@ -32,29 +33,30 @@ export default function ConfirmDialog({ open, message, onConfirm, onCancel }: Co
     <div
       role="dialog"
       aria-modal="true"
-      aria-labelledby="confirm-dialog-title"
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      aria-labelledby="confirm-title"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center"
       onClick={onCancel}
     >
       <div
-        className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4"
+        className="card w-full max-w-sm p-8 animate-slideUp sm:mx-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <p id="confirm-dialog-title" className="text-gray-800 font-medium mb-5">
+        <p
+          id="confirm-title"
+          className="mb-6 text-sm leading-relaxed"
+          style={{ color: "var(--fg)" }}
+        >
           {message}
         </p>
         <div className="flex justify-end gap-3">
           <button
             ref={cancelRef}
             onClick={onCancel}
-            className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg"
+            className="btn-secondary btn-sm"
           >
             Cancel
           </button>
-          <button
-            onClick={onConfirm}
-            className="text-sm bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg"
-          >
+          <button onClick={onConfirm} className="btn-danger btn-sm">
             Delete
           </button>
         </div>

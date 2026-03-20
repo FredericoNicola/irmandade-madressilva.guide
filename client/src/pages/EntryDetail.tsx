@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getEntry, deleteEntry } from '../api/entries';
-import { Entry } from '../types';
-import { useAuth } from '../context/AuthContext';
-import ConfirmDialog from '../components/ConfirmDialog';
+import { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { getEntry, deleteEntry } from "../api/entries";
+import { Entry } from "../types";
+import { useAuth } from "../context/AuthContext";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 export default function EntryDetail() {
   const { id } = useParams<{ id: string }>();
@@ -25,112 +25,160 @@ export default function EntryDetail() {
   const handleDelete = async () => {
     if (!entry) return;
     await deleteEntry(entry.id);
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="text-gray-400">Loading…</span>
+      <div className="flex min-h-screen items-center justify-center">
+        <p
+          className="text-xs font-medium uppercase tracking-widest"
+          style={{ color: "var(--fg-subtle)" }}
+        >
+          Loading…
+        </p>
       </div>
     );
   }
 
   if (!entry) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="text-gray-400">Entry not found.</span>
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="font-serif text-2xl" style={{ color: "var(--fg-muted)" }}>
+          Entry not found
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <Link to="/" className="text-sm text-green-700 hover:text-green-800 mb-6 block">
-        ← Back to listings
+    <div className="mx-auto max-w-4xl px-6 py-12 lg:px-10">
+      <Link
+        to="/"
+        className="mb-8 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider transition-colors"
+        style={{ color: "var(--fg-muted)" }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--brand)")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--fg-muted)")}
+      >
+        ← Back
       </Link>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {entry.photos.length > 0 && (
-          <div>
+      {/* Hero photo */}
+      {entry.photos.length > 0 && (
+        <div className="mb-8">
+          <div
+            className="overflow-hidden cursor-pointer"
+            style={{ height: "480px" }}
+            onClick={() => setSelectedPhoto(entry.photos[0].url)}
+          >
             <img
               src={entry.photos[0].url}
               alt={entry.name}
-              className="w-full h-72 object-cover cursor-pointer"
-              onClick={() => setSelectedPhoto(entry.photos[0].url)}
+              className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
             />
-            {entry.photos.length > 1 && (
-              <div className="flex gap-2 p-3 overflow-x-auto">
-                {entry.photos.slice(1).map((photo) => (
-                  <img
-                    key={photo.id}
-                    src={photo.url}
-                    alt=""
-                    className="w-20 h-20 object-cover rounded-lg shrink-0 cursor-pointer hover:opacity-80"
-                    onClick={() => setSelectedPhoto(photo.url)}
-                  />
-                ))}
-              </div>
-            )}
           </div>
-        )}
-
-        <div className="p-6">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{entry.name}</h1>
-              <p className="text-gray-500 text-sm mt-1">📍 {entry.location}</p>
-            </div>
-            <span className="text-green-700 font-bold text-xl">{entry.medianPrice}</span>
-          </div>
-
-          <p className="text-gray-700 leading-relaxed">{entry.description}</p>
-
-          {entry.latitude && entry.longitude && (
-            <p className="text-xs text-gray-400 mt-4">
-              {entry.latitude}, {entry.longitude}
-            </p>
-          )}
-
-          {entry.createdBy && (
-            <p className="text-xs text-gray-400 mt-2">Added by {entry.createdBy.name}</p>
-          )}
-
-          {user && (
-            <div className="flex gap-3 mt-6 pt-4 border-t border-gray-100">
-              <Link
-                to={`/dashboard/edit/${entry.id}`}
-                className="text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium"
-              >
-                Edit
-              </Link>
-              <button
-                onClick={() => setConfirmOpen(true)}
-                className="text-sm bg-red-50 hover:bg-red-100 text-red-700 px-4 py-2 rounded-lg font-medium"
-              >
-                Delete
-              </button>
+          {entry.photos.length > 1 && (
+            <div className="mt-2 flex gap-2 overflow-x-auto">
+              {entry.photos.slice(1).map((photo) => (
+                <img
+                  key={photo.id}
+                  src={photo.url}
+                  alt=""
+                  className="h-20 w-20 shrink-0 cursor-pointer object-cover transition-opacity hover:opacity-75"
+                  onClick={() => setSelectedPhoto(photo.url)}
+                />
+              ))}
             </div>
           )}
         </div>
+      )}
+
+      {/* Info */}
+      <div style={{ borderBottom: "1px solid var(--border)" }} className="pb-8">
+        <div className="flex items-start justify-between">
+          <div>
+            <p
+              className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em]"
+              style={{ color: "var(--fg-muted)" }}
+            >
+              {entry.location}
+            </p>
+            <h1
+              className="font-serif text-5xl leading-tight"
+              style={{ color: "var(--fg)" }}
+            >
+              {entry.name}
+            </h1>
+          </div>
+          <span
+            className="mt-2 shrink-0 px-4 py-2 text-sm font-semibold"
+            style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
+          >
+            {entry.medianPrice}
+          </span>
+        </div>
       </div>
 
+      <div className="py-8">
+        <p
+          className="text-base leading-[1.8]"
+          style={{ color: "var(--fg-muted)" }}
+        >
+          {entry.description}
+        </p>
+
+        {entry.latitude && entry.longitude && (
+          <p
+            className="mt-6 text-xs font-mono"
+            style={{ color: "var(--fg-subtle)" }}
+          >
+            {entry.latitude}°, {entry.longitude}°
+          </p>
+        )}
+        {entry.createdBy && (
+          <p className="mt-1 text-xs" style={{ color: "var(--fg-subtle)" }}>
+            Added by {entry.createdBy.name}
+          </p>
+        )}
+      </div>
+
+      {user && (
+        <div
+          className="flex gap-3 pt-6"
+          style={{ borderTop: "1px solid var(--border)" }}
+        >
+          <Link
+            to={`/dashboard/edit/${entry.id}`}
+            className="btn-secondary btn-md"
+          >
+            Edit entry
+          </Link>
+          <button
+            onClick={() => setConfirmOpen(true)}
+            className="btn-danger btn-md"
+          >
+            Delete
+          </button>
+        </div>
+      )}
+
+      {/* Lightbox */}
       {selectedPhoto && (
         <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
           onClick={() => setSelectedPhoto(null)}
         >
           <img
             src={selectedPhoto}
             alt="Full size"
-            className="max-w-full max-h-full object-contain rounded-lg"
+            className="max-h-[90vh] max-w-[90vw] object-contain"
           />
         </div>
       )}
 
       <ConfirmDialog
         open={confirmOpen}
-        message="Are you sure you want to delete this entry? This action cannot be undone."
+        message="Delete this entry permanently? This cannot be undone."
         onConfirm={handleDelete}
         onCancel={() => setConfirmOpen(false)}
       />

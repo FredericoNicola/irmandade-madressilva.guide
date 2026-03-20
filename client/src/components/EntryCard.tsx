@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Entry } from '../types';
+import { Link } from "react-router-dom";
+import { Entry } from "../types";
 
 interface EntryCardProps {
   entry: Entry;
@@ -7,51 +7,89 @@ interface EntryCardProps {
   showActions?: boolean;
 }
 
-export default function EntryCard({ entry, onDelete, showActions = false }: EntryCardProps) {
+export default function EntryCard({
+  entry,
+  onDelete,
+  showActions = false,
+}: EntryCardProps) {
   const firstPhoto = entry.photos?.[0];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-      {firstPhoto ? (
-        <img
-          src={firstPhoto.url}
-          alt={entry.name}
-          className="w-full h-48 object-cover"
-        />
-      ) : (
-        <div className="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400 text-4xl">
-          🍽️
-        </div>
-      )}
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="font-semibold text-gray-900 text-lg leading-tight">{entry.name}</h3>
-          <span className="text-green-700 font-bold text-sm shrink-0 ml-2">{entry.medianPrice}</span>
-        </div>
-        <p className="text-sm text-gray-500 mb-2 flex items-center gap-1">
-          <span>📍</span> {entry.location}
-        </p>
-        <p className="text-sm text-gray-600 line-clamp-2">{entry.description}</p>
+    <article className="card-hover group overflow-hidden">
+      {/* Photo */}
+      <div className="relative overflow-hidden" style={{ height: "220px" }}>
+        {firstPhoto ? (
+          <img
+            src={firstPhoto.url}
+            alt={entry.name}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div
+            className="flex h-full w-full items-center justify-center"
+            style={{ backgroundColor: "var(--bg-soft)" }}
+          >
+            <span
+              className="text-xs font-medium uppercase tracking-widest"
+              style={{ color: "var(--fg-subtle)" }}
+            >
+              No Image
+            </span>
+          </div>
+        )}
+        {/* Price badge */}
+        <span
+          className="absolute right-0 top-4 px-3 py-1 text-xs font-semibold"
+          style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
+        >
+          {entry.medianPrice}
+        </span>
+      </div>
 
-        <div className="mt-4 flex gap-2">
+      {/* Content */}
+      <div className="p-5">
+        <p
+          className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em]"
+          style={{ color: "var(--fg-muted)" }}
+        >
+          {entry.location}
+        </p>
+        <h3
+          className="font-serif text-xl leading-snug"
+          style={{ color: "var(--fg)" }}
+        >
+          {entry.name}
+        </h3>
+        <p
+          className="mt-2 line-clamp-2 text-sm leading-relaxed"
+          style={{ color: "var(--fg-muted)" }}
+        >
+          {entry.description}
+        </p>
+
+        <div className="mt-5 flex items-center gap-3">
           <Link
             to={`/entries/${entry.id}`}
-            className="text-sm text-green-700 hover:text-green-800 font-medium"
+            className="group/lnk inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.14em] transition-colors"
+            style={{ color: "var(--brand)" }}
           >
-            View details →
+            Explore
+            <span className="transition-transform group-hover/lnk:translate-x-0.5">
+              →
+            </span>
           </Link>
           {showActions && (
             <div className="ml-auto flex gap-2">
               <Link
                 to={`/dashboard/edit/${entry.id}`}
-                className="text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 rounded-md font-medium"
+                className="btn-secondary btn-sm"
               >
                 Edit
               </Link>
               {onDelete && (
                 <button
                   onClick={() => onDelete(entry.id)}
-                  className="text-sm bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1 rounded-md font-medium"
+                  className="btn-danger btn-sm"
                 >
                   Delete
                 </button>
@@ -60,6 +98,6 @@ export default function EntryCard({ entry, onDelete, showActions = false }: Entr
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getEntries, deleteEntry } from '../api/entries';
-import { Entry } from '../types';
-import EntryCard from '../components/EntryCard';
-import ConfirmDialog from '../components/ConfirmDialog';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getEntries, deleteEntry } from "../api/entries";
+import { Entry } from "../types";
+import EntryCard from "../components/EntryCard";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 export default function Dashboard() {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -24,40 +24,74 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <Link
-          to="/dashboard/new"
-          className="bg-green-700 hover:bg-green-800 text-white text-sm font-semibold px-4 py-2 rounded-lg"
-        >
+    <div className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
+      <div
+        className="mb-10 flex items-end justify-between pb-6"
+        style={{ borderBottom: "1px solid var(--border)" }}
+      >
+        <div>
+          <p
+            className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em]"
+            style={{ color: "var(--fg-muted)" }}
+          >
+            Management
+          </p>
+          <h1 className="font-serif text-4xl" style={{ color: "var(--fg)" }}>
+            Your Entries
+          </h1>
+        </div>
+        <Link to="/dashboard/new" className="btn-primary btn-md">
           + New Entry
         </Link>
       </div>
 
       {loading ? (
-        <p className="text-gray-400">Loading…</p>
+        <div className="py-32 text-center">
+          <p
+            className="text-xs font-medium uppercase tracking-widest"
+            style={{ color: "var(--fg-subtle)" }}
+          >
+            Loading…
+          </p>
+        </div>
       ) : entries.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <p className="text-5xl mb-3">🍽️</p>
-          <p>No entries yet. Add your first spot!</p>
+        <div className="py-32 text-center">
+          <p
+            className="font-serif text-3xl"
+            style={{ color: "var(--fg-muted)" }}
+          >
+            No entries yet
+          </p>
+          <p className="mt-2 text-sm" style={{ color: "var(--fg-subtle)" }}>
+            Add your first spot to get started
+          </p>
+          <Link
+            to="/dashboard/new"
+            className="btn-primary btn-md mt-8 inline-flex"
+          >
+            Add first entry
+          </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3"
+          style={{ backgroundColor: "var(--border)" }}
+        >
           {entries.map((entry) => (
-            <EntryCard
-              key={entry.id}
-              entry={entry}
-              showActions
-              onDelete={(id) => setConfirmId(id)}
-            />
+            <div key={entry.id} style={{ backgroundColor: "var(--bg)" }}>
+              <EntryCard
+                entry={entry}
+                showActions
+                onDelete={(id) => setConfirmId(id)}
+              />
+            </div>
           ))}
         </div>
       )}
 
       <ConfirmDialog
         open={confirmId !== null}
-        message="Are you sure you want to delete this entry? This action cannot be undone."
+        message="Delete this entry permanently? This action cannot be undone."
         onConfirm={handleDelete}
         onCancel={() => setConfirmId(null)}
       />
