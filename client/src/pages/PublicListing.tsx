@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getEntries } from "../api/entries";
 import { Entry } from "../types";
 import EntryCard from "../components/EntryCard";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function PublicListing() {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -12,7 +13,7 @@ export default function PublicListing() {
   useEffect(() => {
     getEntries()
       .then((res) => setEntries(res.data))
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(true));
   }, []);
 
   // Periodic spontaneous shimmy
@@ -139,14 +140,7 @@ export default function PublicListing() {
         </div>
 
         {loading ? (
-          <div className="py-32 text-center">
-            <p
-              className="text-xs font-medium uppercase tracking-widest"
-              style={{ color: "var(--fg-subtle)" }}
-            >
-              Loading…
-            </p>
-          </div>
+          <LoadingScreen />
         ) : filtered.length === 0 ? (
           <div className="py-32 text-center">
             <p

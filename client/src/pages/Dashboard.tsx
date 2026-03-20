@@ -4,6 +4,7 @@ import { getEntries, deleteEntry } from "../api/entries";
 import { Entry } from "../types";
 import EntryCard from "../components/EntryCard";
 import ConfirmDialog from "../components/ConfirmDialog";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function Dashboard() {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -52,14 +53,7 @@ export default function Dashboard() {
       </div>
 
       {loading ? (
-        <div className="py-32 text-center">
-          <p
-            className="text-xs font-medium uppercase tracking-widest"
-            style={{ color: "var(--fg-subtle)" }}
-          >
-            Loading…
-          </p>
-        </div>
+        <LoadingScreen />
       ) : entries.length === 0 ? (
         <div className="py-32 text-center">
           <p

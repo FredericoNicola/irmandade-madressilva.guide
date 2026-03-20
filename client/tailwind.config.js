@@ -64,6 +64,7 @@ export default {
         fadeIn: "fadeIn 0.3s ease-in-out",
         slideUp: "slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
         crow: "crow 0.9s ease-in-out",
+        "spin-slow": "spin 6s linear infinite",
       },
       keyframes: {
         fadeIn: {

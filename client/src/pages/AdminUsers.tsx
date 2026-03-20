@@ -2,6 +2,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { getUsers, createUser, updateUser, deleteUser } from "../api/users";
 import { User } from "../types";
 import ConfirmDialog from "../components/ConfirmDialog";
+import LoadingScreen from "../components/LoadingScreen";
 
 interface UserForm {
   email: string;
@@ -194,7 +195,7 @@ export default function AdminUsers() {
       )}
 
       {loading ? (
-        <p className="text-surface-400 dark:text-surface-600">Loading…</p>
+        <LoadingScreen />
       ) : (
         <div className="card overflow-x-auto border-surface-200 dark:border-surface-700">
           <table className="w-full min-w-[560px] text-sm">

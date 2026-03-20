@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ReactNode } from "react";
+import LoadingScreen from "./LoadingScreen";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -14,13 +15,7 @@ export default function ProtectedRoute({
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <span className="text-lg text-surface-400 dark:text-surface-600">
-          Loading…
-        </span>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user) {

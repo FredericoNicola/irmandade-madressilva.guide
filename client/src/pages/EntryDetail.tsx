@@ -4,6 +4,7 @@ import { getEntry, deleteEntry } from "../api/entries";
 import { Entry } from "../types";
 import { useAuth } from "../context/AuthContext";
 import ConfirmDialog from "../components/ConfirmDialog";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function EntryDetail() {
   const { id } = useParams<{ id: string }>();
@@ -29,16 +30,7 @@ export default function EntryDetail() {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p
-          className="text-xs font-medium uppercase tracking-widest"
-          style={{ color: "var(--fg-subtle)" }}
-        >
-          Loading…
-        </p>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!entry) {
