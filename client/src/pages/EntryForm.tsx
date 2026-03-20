@@ -116,7 +116,7 @@ export default function EntryForm() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="label">Latitude</label>
             <input
@@ -189,20 +189,20 @@ export default function EntryForm() {
         </div>
 
         <div
-          className="flex gap-3 pt-4"
+          className="flex flex-col gap-3 pt-4 sm:flex-row"
           style={{ borderTop: "1px solid var(--border)" }}
         >
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary btn-md"
+            className="btn-primary btn-md w-full sm:w-auto"
           >
             {loading ? "Saving…" : isEditing ? "Update Entry" : "Create Entry"}
           </button>
           <button
             type="button"
             onClick={() => navigate("/dashboard")}
-            className="btn-secondary btn-md"
+            className="btn-secondary btn-md w-full sm:w-auto"
           >
             Cancel
           </button>

@@ -86,7 +86,7 @@ export default function AdminUsers() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div
-        className="mb-10 flex items-end justify-between pb-6"
+        className="mb-10 flex flex-col gap-4 pb-6 sm:flex-row sm:items-end sm:justify-between"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
         <div>
@@ -96,11 +96,17 @@ export default function AdminUsers() {
           >
             Administration
           </p>
-          <h1 className="font-serif text-4xl" style={{ color: "var(--fg)" }}>
+          <h1
+            className="font-serif text-3xl sm:text-4xl"
+            style={{ color: "var(--fg)" }}
+          >
             User Management
           </h1>
         </div>
-        <button onClick={openCreate} className="btn-primary btn-md">
+        <button
+          onClick={openCreate}
+          className="btn-primary btn-md self-start sm:self-auto"
+        >
           + Add User
         </button>
       </div>
@@ -190,8 +196,8 @@ export default function AdminUsers() {
       {loading ? (
         <p className="text-surface-400 dark:text-surface-600">Loading…</p>
       ) : (
-        <div className="card overflow-hidden border-surface-200 dark:border-surface-700">
-          <table className="w-full text-sm">
+        <div className="card overflow-x-auto border-surface-200 dark:border-surface-700">
+          <table className="w-full min-w-[560px] text-sm">
             <thead
               style={{
                 borderBottom: "1px solid var(--border)",

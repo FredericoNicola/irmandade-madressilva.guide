@@ -67,8 +67,7 @@ export default function EntryDetail() {
       {entry.photos.length > 0 && (
         <div className="mb-8">
           <div
-            className="overflow-hidden cursor-pointer"
-            style={{ height: "480px" }}
+            className="overflow-hidden cursor-pointer aspect-video sm:aspect-auto sm:h-[480px]"
             onClick={() => setSelectedPhoto(entry.photos[0].url)}
           >
             <img
@@ -95,7 +94,7 @@ export default function EntryDetail() {
 
       {/* Info */}
       <div style={{ borderBottom: "1px solid var(--border)" }} className="pb-8">
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p
               className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em]"
@@ -104,14 +103,14 @@ export default function EntryDetail() {
               {entry.location}
             </p>
             <h1
-              className="font-serif text-5xl leading-tight"
+              className="font-serif text-3xl leading-tight sm:text-5xl"
               style={{ color: "var(--fg)" }}
             >
               {entry.name}
             </h1>
           </div>
           <span
-            className="mt-2 shrink-0 px-4 py-2 text-sm font-semibold"
+            className="self-start shrink-0 px-4 py-2 text-sm font-semibold"
             style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
           >
             {entry.medianPrice}

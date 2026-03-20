@@ -26,7 +26,7 @@ export default function Dashboard() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
       <div
-        className="mb-10 flex items-end justify-between pb-6"
+        className="mb-10 flex flex-col gap-4 pb-6 sm:flex-row sm:items-end sm:justify-between"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
         <div>
@@ -36,11 +36,17 @@ export default function Dashboard() {
           >
             Management
           </p>
-          <h1 className="font-serif text-4xl" style={{ color: "var(--fg)" }}>
+          <h1
+            className="font-serif text-3xl sm:text-4xl"
+            style={{ color: "var(--fg)" }}
+          >
             Your Entries
           </h1>
         </div>
-        <Link to="/dashboard/new" className="btn-primary btn-md">
+        <Link
+          to="/dashboard/new"
+          className="btn-primary btn-md self-start sm:self-auto"
+        >
           + New Entry
         </Link>
       </div>
