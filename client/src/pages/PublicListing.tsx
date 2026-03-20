@@ -13,7 +13,7 @@ export default function PublicListing() {
   useEffect(() => {
     getEntries()
       .then((res) => setEntries(res.data))
-      .finally(() => setLoading(true));
+      .finally(() => setLoading(false));
   }, []);
 
   // Periodic spontaneous shimmy
