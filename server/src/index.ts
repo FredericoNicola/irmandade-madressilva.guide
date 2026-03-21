@@ -1,7 +1,6 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import path from "path";
 import rateLimit from "express-rate-limit";
 
 import authRoutes from "./routes/auth";
@@ -37,8 +36,6 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
-
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/entries", generalLimiter, entryRoutes);
