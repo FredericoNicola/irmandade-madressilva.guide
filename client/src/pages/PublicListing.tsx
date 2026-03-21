@@ -16,6 +16,47 @@ export default function PublicListing() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Inject JSON-LD structured data for Google rich results
+  useEffect(() => {
+    if (entries.length === 0) return;
+
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Best Restaurants & Bars in Lisbon — Irmandade Madressilva",
+      description:
+        "A curated guide to Lisbon's best restaurants, bars, and hidden corners, handpicked by locals.",
+      url: "https://irmandade-alpha.vercel.app",
+      numberOfItems: entries.length,
+      itemListElement: entries.map((entry, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "FoodEstablishment",
+          name: entry.name,
+          description: entry.description,
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: entry.location,
+            addressCountry: "PT",
+          },
+          url: `https://irmandade-alpha.vercel.app/entries/${entry.id}`,
+          ...(entry.photos?.[0]?.url ? { image: entry.photos[0].url } : {}),
+        },
+      })),
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.id = "ld-json-listing";
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+
+    return () => {
+      document.getElementById("ld-json-listing")?.remove();
+    };
+  }, [entries]);
+
   // Periodic spontaneous shimmy
   useEffect(() => {
     let shimTimer: ReturnType<typeof setTimeout>;
