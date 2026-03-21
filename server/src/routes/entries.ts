@@ -85,7 +85,8 @@ router.post(
       );
 
       res.status(201).json(photos);
-    } catch {
+    } catch (err) {
+      console.error("Photo upload error:", err);
       res.status(500).json({ message: "Server error" });
     }
   },
