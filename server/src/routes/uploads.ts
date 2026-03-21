@@ -14,9 +14,16 @@ router.delete(
     try {
       const photo = await prisma.photo.findUnique({
         where: { id: req.params.id },
+        include: { entry: { select: { userId: true } } },
       });
       if (!photo) {
         res.status(404).json({ message: "Photo not found" });
+        return;
+      }
+
+      // Only the entry owner or an admin may delete photos
+      if (photo.entry.userId !== req.user!.id && req.user!.role !== "ADMIN") {
+        res.status(403).json({ message: "Not allowed" });
         return;
       }
 

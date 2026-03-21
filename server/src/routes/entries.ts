@@ -1,5 +1,6 @@
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import multer from "multer";
+import crypto from "crypto";
 import path from "path";
 import {
   listEntries,
@@ -8,7 +9,7 @@ import {
   updateEntry,
   deleteEntry,
 } from "../controllers/entryController";
-import { authenticateToken } from "../middleware/auth";
+import { authenticateToken, AuthRequest } from "../middleware/auth";
 import prisma from "../lib/prisma";
 import supabase from "../lib/supabase";
 
@@ -41,7 +42,7 @@ router.post(
   "/:id/photos",
   authenticateToken,
   upload.array("photos", 10),
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: AuthRequest, res: Response): Promise<void> => {
     const files = req.files as Express.Multer.File[];
     if (!files || files.length === 0) {
       res.status(400).json({ message: "No files uploaded" });
@@ -57,10 +58,16 @@ router.post(
         return;
       }
 
+      // Only the entry owner or an admin may upload photos
+      if (entry.userId !== req.user!.id && req.user!.role !== "ADMIN") {
+        res.status(403).json({ message: "Not allowed" });
+        return;
+      }
+
       const photos = await Promise.all(
         files.map(async (file) => {
           const ext = path.extname(file.originalname).toLowerCase();
-          const storagePath = `photos/${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+          const storagePath = `photos/${Date.now()}-${crypto.randomBytes(8).toString("hex")}${ext}`;
 
           const { error } = await supabase.storage
             .from(BUCKET)

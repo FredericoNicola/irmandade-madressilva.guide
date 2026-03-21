@@ -13,7 +13,9 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email: email.trim().toLowerCase() },
+    });
     if (!user) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
@@ -25,11 +27,16 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const secret = process.env.JWT_SECRET as string;
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      res.status(500).json({ message: "Server configuration error" });
+      return;
+    }
+
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       secret,
-      { expiresIn: "7d" },
+      { expiresIn: "24h" },
     );
 
     res.json({
