@@ -23,7 +23,7 @@ export default function EntryForm() {
     description: "",
   });
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [pendingFiles, setPendingFiles] = useState<FileList | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -57,7 +57,7 @@ export default function EntryForm() {
         const res = await createEntry(form);
         entry = res.data;
       }
-      if (pendingFiles && pendingFiles.length > 0) {
+      if (pendingFiles.length > 0) {
         await uploadPhotos(entry.id, pendingFiles);
       }
       navigate("/dashboard");
@@ -171,7 +171,10 @@ export default function EntryForm() {
           {isEditing ? (
             <PhotoUpload
               photos={photos}
-              onUpload={(files) => setPendingFiles(files)}
+              entryId={id}
+              onPhotosAdded={(newPhotos) =>
+                setPhotos((prev) => [...prev, ...newPhotos])
+              }
               onPhotoDeleted={(photoId) =>
                 setPhotos((prev) => prev.filter((p) => p.id !== photoId))
               }
@@ -181,7 +184,11 @@ export default function EntryForm() {
               type="file"
               multiple
               accept="image/*"
-              onChange={(e) => setPendingFiles(e.target.files)}
+              onChange={(e) =>
+                setPendingFiles(
+                  e.target.files ? Array.from(e.target.files) : [],
+                )
+              }
               className="text-sm"
               style={{ color: "var(--fg-muted)" }}
             />

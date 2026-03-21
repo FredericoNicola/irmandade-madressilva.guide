@@ -22,9 +22,9 @@ export const updateEntry = (id: string, data: EntryPayload) =>
 
 export const deleteEntry = (id: string) => api.delete(`/entries/${id}`);
 
-export const uploadPhotos = (id: string, files: FileList) => {
+export const uploadPhotos = (id: string, files: File[]) => {
   const formData = new FormData();
-  Array.from(files).forEach((file) => formData.append("photos", file));
+  files.forEach((file) => formData.append("photos", file));
   return api.post(`/entries/${id}/photos`, formData);
 };
 

@@ -1,27 +1,59 @@
 import { useRef, useState } from "react";
 import { Photo } from "../types";
-import { deletePhoto } from "../api/entries";
+import { deletePhoto, uploadPhotos } from "../api/entries";
 import ConfirmDialog from "./ConfirmDialog";
 
 interface PhotoUploadProps {
   photos: Photo[];
-  onUpload: (files: FileList) => void;
+  /** When provided, photos are uploaded immediately on selection */
+  entryId?: string;
+  onPhotosAdded?: (photos: Photo[]) => void;
+  /** Fallback for create flow — called only when entryId is not set */
+  onUpload?: (files: File[]) => void;
   onPhotoDeleted: (id: string) => void;
 }
 
 export default function PhotoUpload({
   photos,
+  entryId,
+  onPhotosAdded,
   onUpload,
   onPhotoDeleted,
 }: PhotoUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [confirmPhotoId, setConfirmPhotoId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleDelete = async () => {
     if (!confirmPhotoId) return;
     await deletePhoto(confirmPhotoId);
     onPhotoDeleted(confirmPhotoId);
     setConfirmPhotoId(null);
+  };
+
+  const handleFiles = async (fileList: FileList) => {
+    if (!fileList || fileList.length === 0) return;
+    // Convert to array immediately — FileList is a live reference and gets cleared
+    const files = Array.from(fileList);
+
+    if (entryId) {
+      // Edit mode: upload right away
+      setUploading(true);
+      try {
+        const formData = new FormData();
+        files.forEach((f) => formData.append("photos", f));
+        // reuse the api call directly
+        const res = await uploadPhotos(entryId, files);
+        onPhotosAdded?.(res.data);
+      } catch (err) {
+        console.error("Photo upload failed:", err);
+      } finally {
+        setUploading(false);
+      }
+    } else {
+      // Create mode: hand files up to the parent
+      onUpload?.(files);
+    }
   };
 
   return (
@@ -54,7 +86,7 @@ export default function PhotoUpload({
         className="hidden"
         onChange={(e) => {
           if (e.target.files && e.target.files.length > 0) {
-            onUpload(e.target.files);
+            handleFiles(e.target.files);
             e.target.value = "";
           }
         }}
@@ -62,7 +94,8 @@ export default function PhotoUpload({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="text-xs font-medium uppercase tracking-wider transition-colors"
+        disabled={uploading}
+        className="text-xs font-medium uppercase tracking-wider transition-colors disabled:opacity-40"
         style={{
           border: "1px dashed var(--border)",
           color: "var(--fg-muted)",
@@ -75,7 +108,7 @@ export default function PhotoUpload({
           (e.currentTarget.style.borderColor = "var(--border)")
         }
       >
-        + Add photos
+        {uploading ? "Uploading…" : "+ Add photos"}
       </button>
       <ConfirmDialog
         open={confirmPhotoId !== null}
