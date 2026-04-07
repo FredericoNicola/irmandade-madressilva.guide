@@ -133,7 +133,7 @@ export default function EntryDetail() {
         )}
       </div>
 
-      {user && (
+      {user && (user.id === entry.userId || user.role === "ADMIN") && (
         <div
           className="flex gap-3 pt-6"
           style={{ borderTop: "1px solid var(--border)" }}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import Logo from "./Logo";
+import ChangePasswordDialog from "./ChangePasswordDialog";
 
 function ThemeToggle({
   isDark,
@@ -49,6 +50,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { isDark, toggleDark } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -117,6 +119,12 @@ export default function Navbar() {
                 <span className="text-sm" style={{ color: "var(--fg-subtle)" }}>
                   {user.name}
                 </span>
+                <button
+                  onClick={() => setChangePasswordOpen(true)}
+                  className="btn-secondary btn-sm"
+                >
+                  Change Password
+                </button>
                 <button onClick={handleLogout} className="btn-secondary btn-sm">
                   Logout
                 </button>
@@ -211,9 +219,20 @@ export default function Navbar() {
                   >
                     {user.name}
                   </span>
+                </div>
+                <div className="flex gap-2 py-4">
+                  <button
+                    onClick={() => {
+                      setChangePasswordOpen(true);
+                      closeMenu();
+                    }}
+                    className="btn-secondary btn-sm flex-1"
+                  >
+                    Change Password
+                  </button>
                   <button
                     onClick={handleLogout}
-                    className="btn-secondary btn-sm"
+                    className="btn-secondary btn-sm flex-1"
                   >
                     Logout
                   </button>
@@ -233,6 +252,11 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      <ChangePasswordDialog
+        open={changePasswordOpen}
+        onClose={() => setChangePasswordOpen(false)}
+      />
     </nav>
   );
 }
